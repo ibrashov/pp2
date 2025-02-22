@@ -1,30 +1,19 @@
 import json
-import os
 
-# Проверяем существование файла
-file_path = "sample-data.json"
-if not os.path.exists(file_path):
-    raise FileNotFoundError(f"Файл {file_path} не найден. Проверьте путь.")
+data = open('sample-data.json').read()
+object = json.loads(data)
 
-# Открываем JSON-файл
-with open(file_path) as file:
-    data = json.load(file)
+print("======================================================================================")
+print(f"{'DN':<50} {'Description':<20} {'Speed':<10} {'MTU':<6}")
+print("-------------------------------------------------- -------------------  -------  -----")
 
-# Выбираем нужные данные (предполагаем, что они находятся в "imdata")
-interfaces = data.get("imdata", [])
+data = object.get("imdata", [])
 
-# Заголовок
-print("Interface Status")
-print("=" * 50)
-print(f"{'DN':<50} {'Description':<20} {'Speed':<10} {'MTU'}")
-print("-" * 50)
+for i in data:
+    l1_Phys_If = i.get('l1PhysIf', {}).get('attributes', {})
+    dn = l1_Phys_If.get('dn', '')
+    desc = l1_Phys_If.get('descr', '')
+    speed = l1_Phys_If.get('speed', '')
+    mtu = l1_Phys_If.get('mtu', '')
 
-# Вывод данных
-for item in interfaces:
-    attributes = item.get("l1PhysIf", {}).get("attributes", {})
-    dn = attributes.get("dn", "N/A")
-    description = attributes.get("descr", "")
-    speed = attributes.get("speed", "inherit")
-    mtu = attributes.get("mtu", "N/A")
-    
-    print(f"{dn:<50} {description:<20} {speed:<10} {mtu}")
+    print(f"{dn:<50}{desc:<22}{speed:<10}{mtu:<6}")
