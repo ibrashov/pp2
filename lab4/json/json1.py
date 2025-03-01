@@ -1,6 +1,6 @@
 import json
 
-data = open('sample-data.json').read()
+data = open('C:\\Users\\Ануар\\Desktop\\Папки\\Anuar\\pp2git\\lab4\\json\\sample-data.json').read()
 object = json.loads(data)
 
 print("======================================================================================")
