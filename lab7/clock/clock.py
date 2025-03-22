@@ -1,42 +1,46 @@
 import pygame
 import datetime
+import os
 
 pygame.init()
-screen = pygame.display.set_mode((920, 700))
-clock = pygame.time.Clock()
+window = pygame.display.set_mode((920, 700))
+timer = pygame.time.Clock()
 
-image = pygame.image.load('clockclock.png')
-image = pygame.transform.scale(image, (600, 600))
+assets = os.path.dirname(__file__)
+background = pygame.image.load(os.path.join(assets, 'clockclock.png'))
+background = pygame.transform.scale(background, (600, 600))
 
-minute_img = pygame.image.load('righthand.png')
-minute_img = pygame.transform.scale(minute_img, (300, 200))
-second_img = pygame.image.load('lefthand.png')
-second_img = pygame.transform.scale(second_img, (300, 200))
+hand_min = pygame.image.load(os.path.join(assets, 'righthand.png'))
+hand_min = pygame.transform.scale(hand_min, (300, 200))
 
-done = False
+hand_sec = pygame.image.load(os.path.join(assets, 'lefthand.png'))
+hand_sec = pygame.transform.scale(hand_sec, (300, 200))
 
-while not done:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            done = True  
+running = True
 
-    current_time = datetime.datetime.now()
-    hour = int(current_time.strftime("%I"))
-    minute = int(current_time.strftime("%M"))
-    second = int(current_time.strftime("%S"))
+while running:
+    for evt in pygame.event.get():
+        if evt.type == pygame.QUIT:
+            running = False
 
-    hour_angle = (hour % 12 + minute / 60) * 30 * -1
-    minute_angle = minute * 6 * -1 - 10
-    second_angle = second * 6 * -1 - 5
+    now = datetime.datetime.now()
+    hr = now.hour % 12
+    mn = now.minute
+    sc = now.second
 
-    rotated_minute = pygame.transform.rotate(minute_img, minute_angle)
-    rotated_second = pygame.transform.rotate(second_img, second_angle)
+    angle_hr = -((hr + mn / 60) * 30)
+    angle_mn = -(mn * 6) - 10
+    angle_sc = -(sc * 6) - 5
 
-    screen.fill((255, 255, 255))
-    screen.blit(image, (100, 100))
-    screen.blit(rotated_second, (400 - int(rotated_second.get_width() / 2), 400 - int(rotated_second.get_height() / 2)))
-    screen.blit(rotated_minute, (400 - int(rotated_minute.get_width() / 2), 400 - int(rotated_minute.get_height() / 2)))
-    pygame.display.flip()
-    clock.tick(60)
+    img_min = pygame.transform.rotate(hand_min, angle_mn)
+    img_sec = pygame.transform.rotate(hand_sec, angle_sc)
+
+    window.fill((255, 255, 255))
+    window.blit(background, (100, 100))
+    window.blit(img_sec, (400 - img_sec.get_width() // 2, 400 - img_sec.get_height() // 2))
+    window.blit(img_min, (400 - img_min.get_width() // 2, 400 - img_min.get_height() // 2))
+
+    pygame.display.update()
+    timer.tick(60)
 
 pygame.quit()
