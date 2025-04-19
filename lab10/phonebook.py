@@ -50,12 +50,27 @@ def search_contact():
             result = cur.fetchall()
             print(result)
 
+def search_by_phone():
+    phone = input("Enter phone to search: ")
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM phonebook WHERE phone = %s", (phone,))
+            result = cur.fetchall()
+            print(result)
+
 def delete_contact():
     name = input("Enter name to delete: ")
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("DELETE FROM phonebook WHERE name = %s", (name,))
-    print("🗑 Contact deleted!")
+    print("Contact deleted by name!")
+
+def delete_by_phone():
+    phone = input("Enter phone number to delete: ")
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM phonebook WHERE phone = %s", (phone,))
+    print("Contact deleted by phone!")
 
 def main():
     while True:
@@ -65,8 +80,10 @@ def main():
         print("3. Update contact phone")
         print("4. View all contacts")
         print("5. Search contact by name")
-        print("6. Delete contact")
-        print("7. Exit")
+        print("6. Search contact by phone")
+        print("7. Delete contact by name")
+        print("8. Delete contact by phone")
+        print("9. Exit")
 
         choice = input("Choose an option: ")
 
@@ -81,8 +98,12 @@ def main():
         elif choice == '5':
             search_contact()
         elif choice == '6':
-            delete_contact()
+            search_by_phone()
         elif choice == '7':
+            delete_contact()
+        elif choice == '8':
+            delete_by_phone()
+        elif choice == '9':
             break
         else:
             print("Invalid input, please try again.")
